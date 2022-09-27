@@ -46,7 +46,6 @@ public class Practice4 {
 
         Stream<City> cities = readCities("src\\main\\java\\practice\\lab4\\cities.txt");
         // Q1: count how many cities there are for each state
-        // TODO: Map<String, Long> cityCountPerState = ...
         Map<String, Long> cityCountPerState = cities.collect(Collectors.groupingBy(
                 City::getState, Collectors.counting()
         ));
@@ -55,7 +54,6 @@ public class Practice4 {
 
         cities = readCities("src\\main\\java\\practice\\lab4\\cities.txt");
         // Q2: count the total population for each state
-        // TODO: Map<String, Integer> statePopulation = ...
         Map<String, Integer> statePopulation = cities.collect(Collectors.groupingBy(
                 City::getState, Collectors.summingInt(City::getPopulation)
         ));
@@ -64,7 +62,6 @@ public class Practice4 {
 
         cities = readCities("src\\main\\java\\practice\\lab4\\cities.txt");
         // Q3: for each state, get the set of cities with >500,000 population
-        // TODO: Map<String, Set<City>> largeCitiesByState = ...
         Map<String, Set<City>> largeCitiesByState = cities.collect(Collectors.groupingBy(
                 City::getState, Collectors.filtering(s -> s.getPopulation() > 500000, Collectors.toSet())
         ));

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author zmt 11912725
@@ -219,8 +220,29 @@ public class MovieAnalyzer {
     public Map<String, Integer> getMovieCountByGenre() {
         //returns a <genre, count> map
         Map<String, Integer> res = new HashMap<>();
-        res = movieList.stream().collect(Collectors.groupingBy(Movie::getGenre,Collectors.summingInt(m->1)));
-        return res;
+
+        movieList.stream().forEach(a->{
+            String[] arr = a.getGenre().split(",");
+            for (String i :arr){
+                String tmp = i.replace("\"","").strip();
+                if(res.containsKey(tmp)){
+                    res.put(tmp,res.get(tmp)+1);
+                }else {
+                    res.putIfAbsent(tmp,1);
+                }
+
+            }
+        });
+
+        Stream<Map.Entry<String,Integer>> sorted =
+                res.entrySet().stream()
+                        .sorted(Map.Entry.comparingByValue());
+
+        Map<String, Integer> ans =res.entrySet().stream().sorted(Map.Entry.comparingByKey())
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toMap(
+                        Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));;
+
+        return ans;
     }
 
     //step 3 Movie count by co-stars

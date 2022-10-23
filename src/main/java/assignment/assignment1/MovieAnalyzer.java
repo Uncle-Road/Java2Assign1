@@ -27,7 +27,7 @@ public class MovieAnalyzer {
         //        Genre - Genre of the movie
         String Genre;
         //        IMDB_Rating - Rating of the movie at IMDB site
-        double IMDB_Rating;
+        float IMDB_Rating;
         //        Overview - mini story/ summary
         String Overview;
         //        Meta_score - Score earned by the movie
@@ -134,7 +134,7 @@ public class MovieAnalyzer {
             this.Certificate = Certificate.strip();
             this.Runtime = Integer.parseInt(Runtime.replace("min","").strip());
             this.Genre = Genre;
-            this.IMDB_Rating = Double.parseDouble(IMDB_Rating);
+            this.IMDB_Rating = Float.parseFloat(IMDB_Rating);
             this.Overview = Overview.charAt(0)=='\"' ? Overview.substring(1,Overview.length()-1) :Overview.strip();
             this.Meta_score = Integer.parseInt(Meta_score);
             this.Director = Director;
@@ -154,7 +154,7 @@ public class MovieAnalyzer {
             this.Certificate = arr[3].strip();
             this.Runtime = Integer.parseInt(arr[4].replace("min","").strip());
             this.Genre = arr[5].strip();
-            this.IMDB_Rating = Double.parseDouble(arr[6].strip());
+            this.IMDB_Rating = Float.parseFloat(arr[6].strip());
             this.Overview = arr[7].charAt(0)=='\"' ? arr[7].substring(1,arr[7].length()-1) :arr[7].strip();
             this.Meta_score = Integer.parseInt(arr[8].replace("", "1").strip());
             this.Director = arr[9].strip();

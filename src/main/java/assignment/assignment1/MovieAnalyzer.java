@@ -43,8 +43,8 @@ public class MovieAnalyzer {
         String Star2;
         String Star3;
         String Star4;
-//        No_of_votes - Total number of votes
-        String No_of_votes;
+//        No_of_Votes - Total number of votes
+        String No_of_Votes;
 
         public String getPoster_Link() {
             return Poster_Link;
@@ -158,12 +158,12 @@ public class MovieAnalyzer {
             Star4 = star4;
         }
 
-        public String getNo_of_votes() {
-            return No_of_votes;
+        public String getNo_of_Votes() {
+            return No_of_Votes;
         }
 
-        public void setNo_of_votes(String no_of_votes) {
-            No_of_votes = no_of_votes;
+        public void setNo_of_Votes(String No_of_Votes) {
+            No_of_Votes = No_of_Votes;
         }
 
         public String getGross() {
@@ -177,7 +177,24 @@ public class MovieAnalyzer {
         //        Gross - Money earned by that movie
         String Gross;
 
-
+        public Movie(String Poster_Link, String Series_Title,String Released_Year,String Certificate,String Runtime,String Genre,String IMDB_Rating,String Overview,String Meta_score,String Director,String Star1,String Star2,String Star3,String Star4,String No_of_Votes,String Gross){
+            this.Poster_Link = Poster_Link;
+            this.Series_Title = Series_Title;
+            this.Released_Year =Released_Year;
+            this.Certificate = Certificate;
+            this.Runtime = Runtime;
+            this.Genre = Genre;
+            this.IMDB_Rating =IMDB_Rating;
+            this.Overview = Overview;
+            this.Meta_score=Meta_score;
+            this.Director= Director;
+            this.Star1=Star1;
+            this.Star2=Star2;
+            this.Star3=Star3;
+            this.Star4=Star4;
+            this.No_of_Votes = No_of_Votes;
+            this.Gross =Gross;
+        }
     }
 
     //step 0 reading the dataset

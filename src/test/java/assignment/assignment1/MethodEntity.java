@@ -1,4 +1,4 @@
-package assignment.assignment1.test;
+package assignment.assignment1;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

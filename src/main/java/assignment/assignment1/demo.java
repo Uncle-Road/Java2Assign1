@@ -1,4 +1,4 @@
-package assignment.assignment1.src;
+package assignment.assignment1;
 
 import tutorial.lab5.BufferReader;
 
@@ -12,10 +12,10 @@ import java.io.*;
  * @author zmt 11912725
  */
 
-public class MovieAnalyzer {
+public class demo {
 
     //step 0 reading the dataset
-    public MovieAnalyzer(String dataset_set) throws URISyntaxException {
+    public demo(String dataset_set) throws URISyntaxException {
     /*
     he constructor of MovieAnalyzer takes the path of the dataset file
     and reads the data.

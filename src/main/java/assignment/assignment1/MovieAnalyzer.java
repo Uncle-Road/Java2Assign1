@@ -5,9 +5,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author zmt 11912725
@@ -25,7 +23,7 @@ public class MovieAnalyzer {
         //      Certificate - Certificate earned by that movie
         String Certificate;
         //        Runtime - Total runtime of the movie
-        String Runtime;
+        int Runtime;
         //        Genre - Genre of the movie
         String Genre;
         //        IMDB_Rating - Rating of the movie at IMDB site
@@ -64,7 +62,7 @@ public class MovieAnalyzer {
             return Certificate;
         }
 
-        public String getRuntime() {
+        public int getRuntime() {
             return Runtime;
         }
 
@@ -134,7 +132,7 @@ public class MovieAnalyzer {
             this.Series_Title = Series_Title;
             this.Released_Year = Integer.parseInt(Released_Year);
             this.Certificate = Certificate;
-            this.Runtime = Runtime;
+            this.Runtime = Integer.parseInt(Runtime.replace("min","").strip());
             this.Genre = Genre;
             this.IMDB_Rating = Float.parseFloat(IMDB_Rating);
             this.Overview = Overview;
@@ -151,10 +149,10 @@ public class MovieAnalyzer {
         public Movie(String[] arr) {
 //            System.out.println(Arrays.toString(arr));
             this.Poster_Link = arr[0].strip();
-            this.Series_Title = arr[1].strip();
+            this.Series_Title = arr[1].replace("\"","").strip();
             this.Released_Year = Integer.parseInt(arr[2].strip());
             this.Certificate = arr[3].strip();
-            this.Runtime = arr[4].strip();
+            this.Runtime = Integer.parseInt(arr[4].replace("min","").strip());
             this.Genre = arr[5].strip();
             this.IMDB_Rating = Float.parseFloat(arr[6].strip());
             this.Overview = arr[7].strip();
@@ -266,7 +264,12 @@ public class MovieAnalyzer {
     //step 4 Top movies
     public List<String> getTopMovies(int top_k, String by) {
         List<String> res = new ArrayList<>();
+        //runtime and overview all use string
+        if(Objects.equals(by, "runtime")){
 
+        } else if (Objects.equals(by, "overview")) {
+
+        }
         return res;
     }
 
@@ -280,7 +283,21 @@ public class MovieAnalyzer {
     //step 6 Search movies
     public List<String> searchMovies(String genre, float min_rating, int max_runtime) {
         List<String> res = new ArrayList<>();
-        return res;
+        movieList.stream().filter(s->s.getRuntime()<=max_runtime).filter(s->s.getIMDB_Rating()>=min_rating).forEach(
+                a->{
+                    String[] arr = a.getGenre().split(",");
+                    for(String i :arr){
+                        String tmp = i.replace("\"", "").strip();
+                        if (tmp.equals(genre)){
+                            res.add(a.getSeries_Title());
+                        }
+                    }
+                }
+        );
+//        res.stream().forEach(s -> System.out.println(s.toString()));
+        List<String>ans = res.stream().sorted(Comparator.naturalOrder()).toList();
+        ans.stream().forEach(s -> System.out.println(s.toString()));
+        return ans;
     }
 
     public static void main(String[] args) throws URISyntaxException {

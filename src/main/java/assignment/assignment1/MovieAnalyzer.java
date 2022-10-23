@@ -14,12 +14,7 @@ import java.util.stream.Stream;
  */
 
 public class MovieAnalyzer {
-    /*
-    he constructor of MovieAnalyzer takes the path of the dataset file
-    and reads the data.
-    The dataset is in csv format and has the following columns
 
-     */
     public static class Movie {
         //      Poster_Link - address
         String Poster_Link;
@@ -117,21 +112,21 @@ public class MovieAnalyzer {
             return Gross;
         }
 
-        public void getAllInformation(){
+        public void getAllInformation() {
             //Poster_Link,Series_Title,Released_Year,Certificate,Runtime,Genre,IMDB_Rating,Overview,Meta_score,Director,Star1,Star2,Star3,Star4,No_of_Votes,Gross
-            System.out.println(getPoster_Link()+"*"
-                            +getSeries_Title()+"*"
-                            +getReleased_Year()+"*"
-                            +getCertificate()+"*"
-                            +getRuntime()+"*"
-                            +getGenre()+"*"
-                            +getIMDB_Rating()+"*"
-                            +getOverview()+"*"
-                            +getMeta_score()+"*"
-                            +getDirector()+"*"
-                            +getStar1()+"*"+getStar2()+"*"+getStar3()+"*"+getStar4()+"*"
-                            +getNo_of_Votes()+"*"+getGross()+"*"
-                    );
+            System.out.println(getPoster_Link() + "*"
+                    + getSeries_Title() + "*"
+                    + getReleased_Year() + "*"
+                    + getCertificate() + "*"
+                    + getRuntime() + "*"
+                    + getGenre() + "*"
+                    + getIMDB_Rating() + "*"
+                    + getOverview() + "*"
+                    + getMeta_score() + "*"
+                    + getDirector() + "*"
+                    + getStar1() + "*" + getStar2() + "*" + getStar3() + "*" + getStar4() + "*"
+                    + getNo_of_Votes() + "*" + getGross() + "*"
+            );
         }
 
         public Movie(String Poster_Link, String Series_Title, String Released_Year, String Certificate, String Runtime, String Genre, String IMDB_Rating, String Overview, String Meta_score, String Director, String Star1, String Star2, String Star3, String Star4, String No_of_Votes, String Gross) {
@@ -152,7 +147,8 @@ public class MovieAnalyzer {
             this.No_of_Votes = Integer.parseInt(No_of_Votes);
             this.Gross = Long.parseLong(Gross);
         }
-        public Movie(String[] arr){
+
+        public Movie(String[] arr) {
 //            System.out.println(Arrays.toString(arr));
             this.Poster_Link = arr[0].strip();
             this.Series_Title = arr[1].strip();
@@ -162,14 +158,14 @@ public class MovieAnalyzer {
             this.Genre = arr[5].strip();
             this.IMDB_Rating = Float.parseFloat(arr[6].strip());
             this.Overview = arr[7].strip();
-            this.Meta_score = Integer.parseInt(arr[8].replace("","1").strip());
+            this.Meta_score = Integer.parseInt(arr[8].replace("", "1").strip());
             this.Director = arr[9].strip();
             this.Star1 = arr[10].strip();
             this.Star2 = arr[11].strip();
             this.Star3 = arr[12].strip();
             this.Star4 = arr[13].strip();
             this.No_of_Votes = Integer.parseInt(arr[14].strip());
-            this.Gross = Integer.parseInt(arr[15].replace(",","").replace("\"","").strip());
+            this.Gross = Integer.parseInt(arr[15].replace(",", "").replace("\"", "").strip());
         }
     }
 
@@ -197,50 +193,46 @@ public class MovieAnalyzer {
         //returns <year, count> map
         //sort
 
-        Map<Integer, Integer> res = movieList.stream().collect(Collectors.groupingBy(Movie::getReleased_Year,Collectors.summingInt(m->1)));
+        Map<Integer, Integer> res = movieList.stream().collect(Collectors.groupingBy(Movie::getReleased_Year, Collectors.summingInt(m -> 1)));
 
         Map<Integer, Integer> ans = new TreeMap<>(
-                new Comparator<Integer>(){
+                new Comparator<Integer>() {
                     @Override
-                    public int compare(Integer a1,Integer a2){
+                    public int compare(Integer a1, Integer a2) {
                         return a2.compareTo(a1);
                     }
                 }
         );
-        Set<Integer> keySets= res.keySet();
+        Set<Integer> keySets = res.keySet();
         Iterator<Integer> iter = keySets.iterator();
         while (iter.hasNext()) {
             Integer key = iter.next();
-            ans.put(key,res.get(key));
+            ans.put(key, res.get(key));
         }
         return ans;
     }
 
     //step 2 Movie count by genre
     public Map<String, Integer> getMovieCountByGenre() {
-        //returns a <genre, count> map
         Map<String, Integer> res = new HashMap<>();
 
-        movieList.stream().forEach(a->{
+        movieList.stream().forEach(a -> {
             String[] arr = a.getGenre().split(",");
-            for (String i :arr){
-                String tmp = i.replace("\"","").strip();
-                if(res.containsKey(tmp)){
-                    res.put(tmp,res.get(tmp)+1);
-                }else {
-                    res.putIfAbsent(tmp,1);
+            for (String i : arr) {
+                String tmp = i.replace("\"", "").strip();
+                if (res.containsKey(tmp)) {
+                    res.put(tmp, res.get(tmp) + 1);
+                } else {
+                    res.putIfAbsent(tmp, 1);
                 }
 
             }
         });
 
-        Stream<Map.Entry<String,Integer>> sorted =
-                res.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue());
-
-        Map<String, Integer> ans =res.entrySet().stream().sorted(Map.Entry.comparingByKey())
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toMap(
-                        Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));;
+        Map<String, Integer> ans = res.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
         return ans;
     }
@@ -248,7 +240,26 @@ public class MovieAnalyzer {
     //step 3 Movie count by co-stars
     public Map<List<String>, Integer> getCoStarCount() {
         Map<List<String>, Integer> res = new HashMap<>();
-
+        movieList.forEach(a->{
+            String s1 = a.getStar1();
+            String s2 = a.getStar2();
+            String s3 = a.getStar3();
+            String s4 = a.getStar4();
+            String[] arr = new String[]{s1,s2,s3,s4};
+            Arrays.sort(arr);
+            for(int i =0;i<3;i++){
+                for(int j =i+1;j<4;j++){
+                    List<String> tmp = new ArrayList<>();
+                    tmp.add(arr[i]);
+                    tmp.add(arr[j]);
+                    if(res.containsKey(tmp)){
+                        res.put(tmp, res.get(tmp) + 1);
+                    }else {
+                        res.putIfAbsent(tmp, 1);
+                    }
+                }
+            }
+        });
         return res;
     }
 

@@ -27,7 +27,7 @@ public class MovieAnalyzer {
         //        Genre - Genre of the movie
         String Genre;
         //        IMDB_Rating - Rating of the movie at IMDB site
-        float IMDB_Rating;
+        double IMDB_Rating;
         //        Overview - mini story/ summary
         String Overview;
         //        Meta_score - Score earned by the movie
@@ -40,7 +40,7 @@ public class MovieAnalyzer {
         String Star3;
         String Star4;
         int No_of_Votes;
-        long Gross;
+        double Gross;
 
         public Movie() {
 
@@ -70,7 +70,7 @@ public class MovieAnalyzer {
             return Genre;
         }
 
-        public float getIMDB_Rating() {
+        public double getIMDB_Rating() {
             return IMDB_Rating;
         }
 
@@ -106,7 +106,7 @@ public class MovieAnalyzer {
             return No_of_Votes;
         }
 
-        public long getGross() {
+        public double getGross() {
             return Gross;
         }
 
@@ -128,22 +128,22 @@ public class MovieAnalyzer {
         }
 
         public Movie(String Poster_Link, String Series_Title, String Released_Year, String Certificate, String Runtime, String Genre, String IMDB_Rating, String Overview, String Meta_score, String Director, String Star1, String Star2, String Star3, String Star4, String No_of_Votes, String Gross) {
-            this.Poster_Link = Poster_Link;
-            this.Series_Title = Series_Title;
+            this.Poster_Link = Poster_Link.strip();
+            this.Series_Title = Series_Title.replace("\"","").strip();
             this.Released_Year = Integer.parseInt(Released_Year);
-            this.Certificate = Certificate;
+            this.Certificate = Certificate.strip();
             this.Runtime = Integer.parseInt(Runtime.replace("min","").strip());
             this.Genre = Genre;
-            this.IMDB_Rating = Float.parseFloat(IMDB_Rating);
-            this.Overview = Overview;
+            this.IMDB_Rating = Double.parseDouble(IMDB_Rating);
+            this.Overview = Overview.charAt(0)=='\"' ? Overview.substring(1,Overview.length()-1) :Overview.strip();
             this.Meta_score = Integer.parseInt(Meta_score);
             this.Director = Director;
-            this.Star1 = Star1;
-            this.Star2 = Star2;
-            this.Star3 = Star3;
-            this.Star4 = Star4;
+            this.Star1 = Star1.strip();
+            this.Star2 = Star2.strip();
+            this.Star3 = Star3.strip();
+            this.Star4 = Star4.strip();
             this.No_of_Votes = Integer.parseInt(No_of_Votes);
-            this.Gross = Long.parseLong(Gross);
+            this.Gross = Double.parseDouble(Gross.replace(",", "").replace("\"", "").strip());
         }
 
         public Movie(String[] arr) {
@@ -154,8 +154,8 @@ public class MovieAnalyzer {
             this.Certificate = arr[3].strip();
             this.Runtime = Integer.parseInt(arr[4].replace("min","").strip());
             this.Genre = arr[5].strip();
-            this.IMDB_Rating = Float.parseFloat(arr[6].strip());
-            this.Overview = arr[7].strip();
+            this.IMDB_Rating = Double.parseDouble(arr[6].strip());
+            this.Overview = arr[7].charAt(0)=='\"' ? arr[7].substring(1,arr[7].length()-1) :arr[7].strip();
             this.Meta_score = Integer.parseInt(arr[8].replace("", "1").strip());
             this.Director = arr[9].strip();
             this.Star1 = arr[10].strip();
@@ -163,7 +163,7 @@ public class MovieAnalyzer {
             this.Star3 = arr[12].strip();
             this.Star4 = arr[13].strip();
             this.No_of_Votes = Integer.parseInt(arr[14].strip());
-            this.Gross = Integer.parseInt(arr[15].replace(",", "").replace("\"", "").strip());
+            this.Gross =  Double.parseDouble(arr[15].replace(",", "").replace("\"", "").strip());
         }
     }
 
@@ -264,11 +264,24 @@ public class MovieAnalyzer {
     //step 4 Top movies
     public List<String> getTopMovies(int top_k, String by) {
         List<String> res = new ArrayList<>();
-        //runtime and overview all use string
+
         if(Objects.equals(by, "runtime")){
+            res = movieList.stream().sorted((m1,m2)-> {
+                if (m1.getRuntime() == m2.getRuntime()) {
+                    return m1.getSeries_Title().compareTo(m2.getSeries_Title());
+                }else {
+                    return m2.getRuntime()-m1.getRuntime();
+                }
+            }).map(Movie::getSeries_Title).limit(top_k).collect(Collectors.toList());
 
         } else if (Objects.equals(by, "overview")) {
-
+            res = movieList.stream().sorted((m1,m2)->{
+                if (m1.getOverview().length()== m2.getOverview().length()){
+                    return m1.getSeries_Title().compareTo(m2.getSeries_Title());
+                }else {
+                    return m2.getOverview().length()-m1.getOverview().length();
+                }
+            }).map(Movie::getSeries_Title).limit(top_k).collect(Collectors.toList());;
         }
         return res;
     }
@@ -276,7 +289,74 @@ public class MovieAnalyzer {
     //step 5 Top stars
     public List<String> getTopStars(int top_k, String by) {
         List<String> res = new ArrayList<>();
-
+        Map<String, Double> rating_avg = new HashMap<>();
+        Map<String, Double> rating_sum = new HashMap<>();
+        Map<String,Integer>occur_num = new HashMap<>();
+        Map<String, Double> gross_avg = new HashMap<>();
+        Map<String, Double> gross_sum = new HashMap<>();
+        if (Objects.equals(by, "rating")){
+            movieList.stream().forEach(a->{
+                String s1 = a.getStar1();
+                String s2 = a.getStar2();
+                String s3 = a.getStar3();
+                String s4 = a.getStar4();
+                String[] arr = new String[]{s1,s2,s3,s4};
+                Arrays.sort(arr);
+                for (String i :arr) {
+                    if (rating_sum.containsKey(i)) {
+                        rating_sum.put(i, rating_sum.get(i) + a.getIMDB_Rating());
+                    } else {
+                        rating_sum.putIfAbsent(i, a.getIMDB_Rating());
+                    }
+                    if (occur_num.containsKey(i)){
+                        occur_num.put(i,occur_num.get(i)+1);
+                    }else {
+                        occur_num.putIfAbsent(i,1);
+                    }
+                }
+            });
+            Set<String> nameList = occur_num.keySet();
+            for(String i:nameList){
+                rating_avg.put(i,rating_sum.get(i)/occur_num.get(i));
+            }
+            rating_avg = rating_avg.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+            res = rating_avg.keySet().stream().limit(top_k).toList();
+        }else if (Objects.equals(by, "gross")){
+            movieList.stream().forEach(a->{
+                if (a.getGross()!=1) {
+                    String s1 = a.getStar1();
+                    String s2 = a.getStar2();
+                    String s3 = a.getStar3();
+                    String s4 = a.getStar4();
+                    String[] arr = new String[]{s1, s2, s3, s4};
+                    Arrays.sort(arr);
+                    for (String i : arr) {
+                        if (gross_sum.containsKey(i)) {
+                            gross_sum.put(i, gross_sum.get(i) + a.getGross());
+                        } else {
+                            gross_sum.putIfAbsent(i, a.getGross());
+                        }
+                        if (occur_num.containsKey(i)) {
+                            occur_num.put(i, occur_num.get(i) + 1);
+                        } else {
+                            occur_num.putIfAbsent(i, 1);
+                        }
+                    }
+                }
+            });
+            Set<String> nameList = occur_num.keySet();
+            for(String i:nameList){
+                gross_avg.put(i,gross_sum.get(i)/occur_num.get(i));
+            }
+            gross_avg = gross_avg.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+            res = gross_avg.keySet().stream().limit(top_k).toList();
+        }
         return res;
     }
 

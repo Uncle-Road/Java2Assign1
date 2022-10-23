@@ -1,17 +1,12 @@
 package assignment.assignment1;
 
-import java.io.*;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author zmt 11912725
@@ -30,7 +25,7 @@ public class MovieAnalyzer {
         //      Series_Title - Name of the movie
         String Series_Title;
         //      Released_Year - Year at which that movie released
-        String Released_Year;
+        int Released_Year;
         //      Certificate - Certificate earned by that movie
         String Certificate;
         //        Runtime - Total runtime of the movie
@@ -38,11 +33,11 @@ public class MovieAnalyzer {
         //        Genre - Genre of the movie
         String Genre;
         //        IMDB_Rating - Rating of the movie at IMDB site
-        String IMDB_Rating;
+        float IMDB_Rating;
         //        Overview - mini story/ summary
         String Overview;
         //        Meta_score - Score earned by the movie
-        String Meta_score;
+        int Meta_score;
         //        Director - Name of the Director
         String Director;
         //        Star1,Star2,Star3,Star4 - Name of the Stars
@@ -50,8 +45,8 @@ public class MovieAnalyzer {
         String Star2;
         String Star3;
         String Star4;
-        //        No_of_Votes - Total number of votes
-        String No_of_Votes;
+        int No_of_Votes;
+        long Gross;
 
         public Movie() {
 
@@ -61,132 +56,65 @@ public class MovieAnalyzer {
             return Poster_Link;
         }
 
-        public void setPoster_Link(String poster_Link) {
-            Poster_Link = poster_Link;
-        }
-
         public String getSeries_Title() {
             return Series_Title;
         }
 
-        public void setSeries_Title(String series_Title) {
-            Series_Title = series_Title;
-        }
-
-        public String getReleased_Year() {
+        public int getReleased_Year() {
             return Released_Year;
-        }
-
-        public void setReleased_Year(String released_Year) {
-            Released_Year = released_Year;
         }
 
         public String getCertificate() {
             return Certificate;
         }
 
-        public void setCertificate(String certificate) {
-            Certificate = certificate;
-        }
-
         public String getRuntime() {
             return Runtime;
-        }
-
-        public void setRuntime(String runtime) {
-            Runtime = runtime;
         }
 
         public String getGenre() {
             return Genre;
         }
 
-        public void setGenre(String genre) {
-            Genre = genre;
-        }
-
-        public String getIMDB_Rating() {
+        public float getIMDB_Rating() {
             return IMDB_Rating;
-        }
-
-        public void setIMDB_Rating(String IMDB_Rating) {
-            this.IMDB_Rating = IMDB_Rating;
         }
 
         public String getOverview() {
             return Overview;
         }
 
-        public void setOverview(String overview) {
-            Overview = overview;
-        }
-
-        public String getMeta_score() {
+        public int getMeta_score() {
             return Meta_score;
-        }
-
-        public void setMeta_score(String meta_score) {
-            Meta_score = meta_score;
         }
 
         public String getDirector() {
             return Director;
         }
 
-        public void setDirector(String director) {
-            Director = director;
-        }
-
         public String getStar1() {
             return Star1;
-        }
-
-        public void setStar1(String star1) {
-            Star1 = star1;
         }
 
         public String getStar2() {
             return Star2;
         }
 
-        public void setStar2(String star2) {
-            Star2 = star2;
-        }
-
         public String getStar3() {
             return Star3;
-        }
-
-        public void setStar3(String star3) {
-            Star3 = star3;
         }
 
         public String getStar4() {
             return Star4;
         }
 
-        public void setStar4(String star4) {
-            Star4 = star4;
-        }
-
-        public String getNo_of_Votes() {
+        public int getNo_of_Votes() {
             return No_of_Votes;
         }
 
-        public void setNo_of_Votes(String No_of_Votes) {
-            No_of_Votes = No_of_Votes;
-        }
-
-        public String getGross() {
+        public long getGross() {
             return Gross;
         }
-
-        public void setGross(String gross) {
-            Gross = gross;
-        }
-
-        //        Gross - Money earned by that movie
-        String Gross;
 
         public void getAllInformation(){
             //Poster_Link,Series_Title,Released_Year,Certificate,Runtime,Genre,IMDB_Rating,Overview,Meta_score,Director,Star1,Star2,Star3,Star4,No_of_Votes,Gross
@@ -208,39 +136,39 @@ public class MovieAnalyzer {
         public Movie(String Poster_Link, String Series_Title, String Released_Year, String Certificate, String Runtime, String Genre, String IMDB_Rating, String Overview, String Meta_score, String Director, String Star1, String Star2, String Star3, String Star4, String No_of_Votes, String Gross) {
             this.Poster_Link = Poster_Link;
             this.Series_Title = Series_Title;
-            this.Released_Year = Released_Year;
+            this.Released_Year = Integer.parseInt(Released_Year);
             this.Certificate = Certificate;
             this.Runtime = Runtime;
             this.Genre = Genre;
-            this.IMDB_Rating = IMDB_Rating;
+            this.IMDB_Rating = Float.parseFloat(IMDB_Rating);
             this.Overview = Overview;
-            this.Meta_score = Meta_score;
+            this.Meta_score = Integer.parseInt(Meta_score);
             this.Director = Director;
             this.Star1 = Star1;
             this.Star2 = Star2;
             this.Star3 = Star3;
             this.Star4 = Star4;
-            this.No_of_Votes = No_of_Votes;
-            this.Gross = Gross;
+            this.No_of_Votes = Integer.parseInt(No_of_Votes);
+            this.Gross = Long.parseLong(Gross);
         }
         public Movie(String[] arr){
-            this.Poster_Link = arr[0];
-            this.Series_Title = arr[1];
-            this.Released_Year = arr[2];
-            this.Certificate = arr[3];
-            this.Runtime = arr[4];
-            this.Genre = arr[5];
-            this.IMDB_Rating = arr[6];
-            this.Overview = arr[7];
-            this.Meta_score = arr[8];
-            this.Director = arr[9];
-            this.Star1 = arr[10];
-            this.Star2 = arr[11];
-            this.Star3 = arr[12];
-            this.Star4 = arr[13];
-            this.No_of_Votes = arr[14];
-            this.Gross = arr[15];
-
+//            System.out.println(Arrays.toString(arr));
+            this.Poster_Link = arr[0].strip();
+            this.Series_Title = arr[1].strip();
+            this.Released_Year = Integer.parseInt(arr[2].strip());
+            this.Certificate = arr[3].strip();
+            this.Runtime = arr[4].strip();
+            this.Genre = arr[5].strip();
+            this.IMDB_Rating = Float.parseFloat(arr[6].strip());
+            this.Overview = arr[7].strip();
+            this.Meta_score = Integer.parseInt(arr[8].replace("","1").strip());
+            this.Director = arr[9].strip();
+            this.Star1 = arr[10].strip();
+            this.Star2 = arr[11].strip();
+            this.Star3 = arr[12].strip();
+            this.Star4 = arr[13].strip();
+            this.No_of_Votes = Integer.parseInt(arr[14].strip());
+            this.Gross = Integer.parseInt(arr[15].replace(",","").replace("\"","").strip());
         }
     }
 
@@ -251,7 +179,7 @@ public class MovieAnalyzer {
         try {
             Files.lines(Paths.get(dataset_path)).skip(1).forEach(a -> {
                 if (a.endsWith(",")) {
-                    a += "1";
+                    a += "\"1\"";
                 }
                 String[] arr = a.strip().split(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)", -1);
                 Movie m = new Movie(arr);
@@ -264,24 +192,39 @@ public class MovieAnalyzer {
 
 
     //step 1 Movie count by year
-    public Map<Integer, Integer> getMovieCountByYear(String year) {
+    public Map<Integer, Integer> getMovieCountByYear() {
         //returns <year, count> map
-        Map<Integer, Integer> res = new HashMap<>();
+        //sort
 
-        return res;
+        Map<Integer, Integer> res = movieList.stream().collect(Collectors.groupingBy(Movie::getReleased_Year,Collectors.summingInt(m->1)));
+
+        Map<Integer, Integer> ans = new TreeMap<>(
+                new Comparator<Integer>(){
+                    @Override
+                    public int compare(Integer a1,Integer a2){
+                        return a2.compareTo(a1);
+                    }
+                }
+        );
+        Set<Integer> keySets= res.keySet();
+        Iterator<Integer> iter = keySets.iterator();
+        while (iter.hasNext()) {
+            Integer key = iter.next();
+            ans.put(key,res.get(key));
+        }
+        return ans;
     }
 
     //step 2 Movie count by genre
-    public Map<Integer, Integer> getMovieCountByGenre() {
+    public Map<String, Integer> getMovieCountByGenre() {
         //returns a <genre, count> map
-        Map<Integer, Integer> res = new HashMap<>();
-
+        Map<String, Integer> res = new HashMap<>();
+        res = movieList.stream().collect(Collectors.groupingBy(Movie::getGenre,Collectors.summingInt(m->1)));
         return res;
     }
 
     //step 3 Movie count by co-stars
     public Map<List<String>, Integer> getCoStarCount() {
-        //returns a <genre, count> map
         Map<List<String>, Integer> res = new HashMap<>();
 
         return res;
@@ -297,6 +240,7 @@ public class MovieAnalyzer {
     //step 5 Top stars
     public List<String> getTopStars(int top_k, String by) {
         List<String> res = new ArrayList<>();
+
         return res;
     }
 
@@ -310,8 +254,7 @@ public class MovieAnalyzer {
         System.out.println("===================");
         MovieAnalyzer m = new MovieAnalyzer("D:\\code\\java\\22F-CS209A-Labs\\src\\main\\resources\\imdb_top_500.csv");
         System.out.println("-------------------");
-//        m.movieList.forEach(System.out::println);
         System.out.println(m.movieList.size());
-        m.movieList.forEach(a->{a.getAllInformation();});
+//        m.movieList.forEach(a->{a.getAllInformation();});
     }
 }
